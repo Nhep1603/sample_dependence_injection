@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_simple_dependency_injection/injector.dart';
-
-import 'package:sample_dependence_injection/bloc/calculate_bloc.dart';
-import 'package:sample_dependence_injection/mudule_container.dart';
+import 'bloc/calculate_bloc.dart';
+import 'module_container.dart';
 
 void main() {
-  final injector = ModuleContainer().initialise(Injector());
-  runApp(MyApp(injector: injector));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     Key? key,
-    required this.injector,
   }) : super(key: key);
-
-  final Injector injector;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: BlocProvider(
         create: (context) => CalculateBloc(),
-        child: Home(injector: injector),
+        child: const Home(),
       ),
     );
   }
@@ -33,17 +27,15 @@ class MyApp extends StatelessWidget {
 class Home extends StatelessWidget {
   const Home({
     Key? key,
-    required this.injector,
   }) : super(key: key);
 
-  final Injector injector;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: BlocBuilder<CalculateBloc, CalculateState>(
-          bloc: injector.get<CalculateBloc>(),
+          bloc: ModuleContainer.injector.get<CalculateBloc>(),
           builder: (context, state) {
             return Container(
               padding: const EdgeInsets.all(50.0),
@@ -59,7 +51,7 @@ class Home extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      injector.get<CalculateBloc>().add(const CalculateEvent());
+                      ModuleContainer.injector.get<CalculateBloc>().add(const CalculateEvent());
                     },
                     child: const Text(
                       'add',
